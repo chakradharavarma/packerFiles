@@ -1,0 +1,40 @@
+{
+     "builders": [
+         {
+             "type": "amazon-ebs",
+             "region": "us-east-1",
+             "source_ami": "ami-97785bed",
+             "instance_type": "x1e.8xlarge",
+             "vpc_id": "vpc-6227d705",
+             "ssh_username": "ec2-user",
+             "subnet_id": "subnet-366d3b40",
+             "ami_block_device_mappings": [
+                {
+                    "delete_on_termination": "true",
+                    "device_name": "/dev/sdb",
+                    "encrypted": "true",
+                    "volume_size": 960,
+                    "volume_type": "gp2"
+                }
+             ],
+             "ami_name": "packer_jeffdependencies_0.1"
+         }
+     ],
+     "provisioners": [
+         {
+           "type": "file",
+           "source": "/apps/AWS/authorized_keys",
+           "destination": "/tmp/authorized_keys"
+         },
+         {
+           "type": "ansible",
+           "playbook_file": "test.yml"
+         },
+         {
+           "type": "ansible",
+           "playbook_file": "/apps/ansible/playbooks/Base/Aws.yml",
+           "extra_arguments": [ "-Kb" ],
+           "user": "ec2-user"
+         }
+     ]
+}
